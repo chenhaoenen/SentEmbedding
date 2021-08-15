@@ -11,7 +11,7 @@ python3 -u -m src.example.simcse.unsuper \
     --task_dir $task_dir \
     --task_name ATEC \
     --pretrained_model_path $pretrained_model_path \
-    --epoch 5 \
+    --epoch 100 \
     --batch_size 64 \
     --learning_rate 1e-5 \
     --max_seq_length 64 \

@@ -122,7 +122,8 @@ class SimCse(nn.Module):
             sent_embed_out = self.mlp(sent_embed_out) #[B, num_sent, hidden_size]
 
         if train:
-            loss = self.compute_loss(sent_embed_out)
+            # loss = self.compute_loss(sent_embed_out)
+            loss = self.compute_flatnce_loss(sent_embed_out)
             return loss
         else:
             return sent_embed_out.squeeze(1) # [B, hidden_size] when evaluate，num_sent equal 1
@@ -230,13 +231,15 @@ class SimCse(nn.Module):
 
         # calculate similarity
         cos_sim = self.sim_fun(sent1.unsqueeze(1), sent2.unsqueeze(0)) #[B*world_size, B*world_size]
+        mask = torch.eye(cos_sim.size(0)).to(device) #[B*world_size, B*world_size]
 
         # Hard negative
         if num_sent == 3:
             sent1_sent3_cos_sim = self.sim_fun(sent1.unsqueeze(1), sent3.unsqueeze(0)) #[B*world_size, B*world_size]
             cos_sim = torch.cat([cos_sim, sent1_sent3_cos_sim], dim=1) # [B*world_size, 2*B*world_size]
+            sent1_sent3_mask = torch.zeros_like(sent1_sent3_cos_sim).to(device) #[B*world_size, B*world_size]
+            mask = torch.cat([mask, sent1_sent3_mask], dim=-1) # [B*world_size, 2*B*world_size]
 
-        labels_sim = torch.arange(cos_sim.size(0)).long().to(device)
 
         # Calculate loss with hard negatives
         if num_sent == 3:
@@ -246,10 +249,17 @@ class SimCse(nn.Module):
                 [[0.0] * (cos_sim.size(-1) - sent1_sent3_cos_sim.size(-1)) + [0.0] * i + [sent3_weight] + [0.0] * (
                             sent1_sent3_cos_sim.size(-1) - i - 1) for i in range(sent1_sent3_cos_sim.size(-1))]
             ).to(device)
-            cos_sim = cos_sim + weights
-        loss = self.loss_fun(cos_sim, labels_sim)
+            cos_sim = cos_sim + weights # [B*world_size, 2*B*world_size]
 
 
+        # Calculate loss
+
+        # diagonal
+        positive = torch.diagonal(cos_sim, 0) #[B*world_size]
+        # non diagonal
+        negative = torch.masked_select(cos_sim, (1-mask).bool()).view(cos_sim.size(0), -1) # [B*world_size, 2*B*world_size-1]
+        #logsumexp
+        loss = (torch.logsumexp(negative, dim=1) - positive).mean()
 
         return loss
 
