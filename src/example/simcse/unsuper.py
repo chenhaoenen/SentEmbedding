@@ -13,8 +13,8 @@ import numpy as np
 from torch import optim
 from src.utils.timer import stats_time
 from src.model.simcse.model import SimCse
-from transformers import AutoTokenizer, set_seed
 from torch.utils.data import TensorDataset, DataLoader
+from transformers import AutoTokenizer, set_seed, logging
 from src.evaluate.fromsu.eval import l2_normalize, compute_corrcoef
 
 def parse_arguments():
@@ -27,7 +27,7 @@ def parse_arguments():
     parser.add_argument('--hard_negative_weight', default=0, type=float, help='The **logit** of weight for hard negatives (only effective if hard negatives are used')
     parser.add_argument('--task_dir', required=True, type=str, help="The directory of train data")
     parser.add_argument('--task_name', required=True, type=str, help="The task name of train data")
-    parser.add_argument('--max_seq_length', default=128, type=int, help="The maximum length of squence")
+    parser.add_argument('--max_seq_length', default=64, type=int, help="The maximum length of squence")
     parser.add_argument('--batch_size', default=8, type=int, help="Total batch size for training.")
     parser.add_argument('--device', type=str, default='cpu', help='The devices id of gpu')
     parser.add_argument('--learning_rate', default=1.5e-3, type=float, help="The initial learning rate for optimizer")
@@ -39,8 +39,10 @@ def parse_arguments():
 
 def setup_training(args):
     set_seed(args.seed)
+    logging.set_verbosity_error()
     assert torch.cuda.is_available()
     device = torch.device('cuda:1')
+    args.device = device
     assert os.path.isdir(args.pretrained_model_path), f"pre-training model path:{args.pre_trained_model_path} is not exists"
 
     args.input_dir = os.path.join(args.task_dir, args.task_name)
