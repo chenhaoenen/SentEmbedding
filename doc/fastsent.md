@@ -18,6 +18,4 @@ code: https://github.com/fh295/SentenceRepresentation
 源代码我没来得及看,因为是基于theano框架的
 ### FastSent
 该方案是基于SkipThought vector衍化而来，论文之处SkipThought的缺点是训练缓慢，改善的方法是使用BOW的方案。具体的公式如下:
-<img src="https://render.githubusercontent.com/render/math?math=\sum_{w \in S_{i-1} \cup S_{i+1}} \phi\left(\mathbf{s}_{\mathbf{i}}, v_{w}\right)">
-
-
+<img src="./images/fastsent1.png"/>
