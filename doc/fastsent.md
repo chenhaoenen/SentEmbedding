@@ -19,3 +19,13 @@ code: https://github.com/fh295/SentenceRepresentation
 ### FastSent
 该方案是基于SkipThought vector衍化而来，论文之处SkipThought的缺点是训练缓慢，改善的方法是使用BOW的方案。具体的公式如下:
 <img src="./images/fastsent1.png"/>
+这里说的softmax和我们用的略微不同，也就是说去当前句子所有token embedding的平均值(**也就是最终获取的sentence embedding**)，然后对于context上下文中的每个词，做向量内积，然后需要其越大越好
+
+但是在代码里面实际操作的过程中，当前句子的sentence embedding 做softmax时，分母是词表中所有token的 word embedding和其做内积，这个复杂度太高。
+在最终的代码实现过程中，使用的是word2vec的bow的方案，利用霍夫曼树做优化的，仅仅是将 sentence embedding 和 context 中token的word embedding作为内积之后，直接过一个sigmoid后然就利用霍夫曼树去计算损失了。
+
+
+### Conclusion
+1. 论文做了多组实验，最终结论就是摘要里面点到的：具体任务针对具体模型，有的任务基于监督学习好点，反之有的对无监督友好（并不是说某个模型就可以完全训练处最好的 sentenece embedding）
+2. 论文提出的fastsent模型，基于BOW（文本无序）,在部分任务中效果也挺好
+3. DictRep（反转字典）表现最好
