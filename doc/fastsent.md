@@ -25,7 +25,7 @@ code: https://github.com/fh295/SentenceRepresentation
 \arg \max _{\theta} \sum \log P\left(\operatorname{pos}_{1}=t_{1}, \operatorname{pos}_{2}=t_{2}, \ldots, \operatorname{pos}_{K}=t_{K} \mid t_{1}, t_{2}, \ldots, t_{K}, \theta\right)
 $$ --> 
 
-<div align="center"><img style="background: white;" src="https://render.githubusercontent.com/render/math?math=%5Carg%20%5Cmax%20_%7B%5Ctheta%7D%20%5Csum%20%5Clog%20P%5Cleft(%5Coperatorname%7Bpos%7D_%7B1%7D%3Dt_%7B1%7D%2C%20%5Coperatorname%7Bpos%7D_%7B2%7D%3Dt_%7B2%7D%2C%20%5Cldots%2C%20%5Coperatorname%7Bpos%7D_%7BK%7D%3Dt_%7BK%7D%20%5Cmid%20t_%7B1%7D%2C%20t_%7B2%7D%2C%20%5Cldots%2C%20t_%7BK%7D%2C%20%5Ctheta%5Cright)"></div>
+<div align="center"><img style="background: white;" src="..\..\svg\i5wdY0TpCM.svg"></div>
 注意：structBert这里也采用了span的方式，但是它不是span mask,而是打乱shuffled span, $K$ 表示每个shuffled subsequence打乱子序列的长度，文章采用如图(a)所示的$ K=3$  trigrams 长度的 subsequence.
 
 
