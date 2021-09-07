@@ -18,11 +18,12 @@ code: https://github.com/fh295/SentenceRepresentation
 源代码我没来得及看,因为是基于theano框架的
 ### FastSent
 该方案是基于SkipThought vector衍化而来，论文之处SkipThought的缺点是训练缓慢，改善的方法是使用BOW的方案。具体的公式如下:
-<img src="./images/fastsent1.png"/>
+<img src="./images/fastsent1.png"/>  
+
 这里说的softmax和我们用的略微不同，也就是说去当前句子所有token embedding的平均值(**也就是最终获取的sentence embedding**)，然后对于context上下文中的每个词，做向量内积，然后需要其越大越好
 
 但是在代码里面实际操作的过程中，当前句子的sentence embedding 做softmax时，分母是词表中所有token的 word embedding和其做内积，这个复杂度太高。
-在最终的代码实现过程中，使用的是word2vec的bow的方案，利用霍夫曼树做优化的，仅仅是将 sentence embedding 和 context 中token的word embedding作为内积之后，直接过一个sigmoid后然就利用霍夫曼树去计算损失了。
+在最终的代码实现过程中，使用的是word2vec的bow的方案，利用霍夫曼树做优化的，仅仅是将 sentence embedding 和 context 中token的word embedding作为内积之后，直接过一个sigmoid后然就利用霍夫曼树去计算损失了。  
 
 
 ### Conclusion
