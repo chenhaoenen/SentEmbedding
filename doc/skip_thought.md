@@ -13,4 +13,4 @@ code: https://github.com/ryankiros/skip-thoughts
 
 
 ### code
-在代码实现层面，我使用了GRU,也使用了BART架构来做，但是由于BookCorpus数据集缺少的原因，模型没有训练好，后续有了大量的该数据集，可以尝试下
+在代码实现层面，我使用了GRU,也使用了BART架构来做，但是由于BookCorpus数据集缺少的原因，模型没有训练好，后续如果有了大量的该数据集可以尝试下
