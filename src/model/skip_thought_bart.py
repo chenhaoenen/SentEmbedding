@@ -75,3 +75,29 @@ class BartSkipThought(BartPretrainedModel):
         return loss
 
 
+if __name__ == '__main__':
+
+    device = torch.device('cpu')
+    config = transformers.AutoConfig.from_pretrained('/code/pre_trained_model/model/bart-base')
+    model = BartSkipThought(config).from_pretrained('/code/pre_trained_model/model/bart-base').to(device)
+    tokenizer = transformers.AutoTokenizer.from_pretrained('/code/pre_trained_model/model/bart-base')
+    reader = open('/code/SentEmbedding/data/book_corpus_small/input.txt', 'r')
+    examples = [e.strip() for e in reader.readlines()[:4]]
+
+    sent1 = examples[:-1]; sent2 = examples[1:]
+
+    feat1 = tokenizer(sent1[0], max_length=64, truncation=True, padding='max_length', return_tensors='pt').to(device)
+    feat2 = tokenizer(sent2[0], max_length=64, truncation=True, padding='max_length', return_tensors='pt').to(device)
+
+    print(feat1)
+    # out = model(input_ids=feat1.input_ids,
+    #             attention_mask=feat1.attention_mask,
+    #             # decoder_input_ids=feat2.input_ids,
+    #             decoder_attention_mask=feat2.attention_mask[:,1:,],
+    #             labels = feat2.input_ids[:,1:]
+    #             )
+    #
+    # print(out)
+    # print(out.size())
+    # # print(type(out))
+    # print(len(out))
